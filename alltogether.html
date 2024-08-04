@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tunetastic</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .container {
+        width: 100%;
+        min-height: 100vh;
+        padding: 50px 8%;
+        background: #148f77;
+      }
+
+      .playlist {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .playlist-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px; /* Space between playlist items */
+        justify-content: space-between; /* Align items horizontally */
+      }
+
+      .playlist img {
+        width: 100px; /* Adjust size as needed */
+        height: 100px;
+        object-fit: cover;
+        border: 3.5px solid transparent;
+        animation: borderShift 1.5s infinite;
+        border-image: linear-gradient(45deg, blue, indigo, violet) 1;
+        transition: all 0.3s;
+        border-radius: 4px;
+        margin-right: 20px; /* Space between image and info */
+      }
+
+      .playlist-info {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; /* Allow the info section to take available space */
+      }
+
+      .playlist-info h2 {
+        margin-bottom: 10px;
+        color: white;
+      }
+
+      .audio-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between audio and button */
+      }
+
+      audio {
+        margin-top: 5px;
+      }
+
+      .add-to-playlist-btn,
+      .go-to {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #006d77;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .add-to-playlist-btn:hover,
+      .go-to:hover {
+        background-color: #004d40;
+      }
+
+      .search-container {
+        margin-bottom: 20px;
+      }
+
+      .search-container input {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      .search-container button {
+        padding: 10px 15px;
+        margin-left: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #006d77;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .search-container button:hover {
+        background-color: #004d40;
+      }
+
+      .category-container {
+        margin-bottom: 20px;
+      }
+
+      .category-container select {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      h1 {
+        color: white;
+      }
+
+      @keyframes borderShift {
+        0% {
+          border-image-slice: 1;
+          border-image-source: linear-gradient(45deg, blue, indigo, violet);
+        }
+        50% {
+          border-image-slice: 1;
+          border-image-source: linear-gradient(45deg, violet, indigo, blue);
+        }
+        100% {
+          border-image-slice: 1;
+          border-image-source: linear-gradient(45deg, blue, indigo, violet);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Beats</h1>
+      <br />
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by beat name..."
+        />
+        <button onclick="searchBeats()">Search</button>
+      </div>
+      <div class="category-container">
+        <select id="categorySelect" onchange="filterByCategory()">
+          <option value="">All Categories</option>
+          <!-- Categories will be populated dynamically -->
+        </select>
+      </div>
+      <div class="playlist" id="playlistContainer">
+        <!-- Playlist items will be populated dynamically -->
+      </div>
+      <button class="go-to" onclick="window.location.href='my_playlists.html'">
+        Go to My Playlists
+      </button>
+    </div>
+
+    <script>
+      const musicData = [
+        {
+          title: "Space Beat",
+          artist: "Artist 1",
+          genre: "Electronic",
+          url: "audio/Space Beat.mp3",
+          img: "assets/Space Beat.jpg",
+        },
+        {
+          title: "Ethereal Dream",
+          artist: "Artist 2",
+          genre: "Chill",
+          url: "audio/Ethereal Dream.mp3",
+          img: "assets/Ethereal Dream.jpg",
+        },
+        {
+          title: "Urban Pulse",
+          artist: "Artist 3",
+          genre: "Hip-Hop",
+          url: "audio/Urban Pulse.mp3",
+          img: "assets/Urban Pulse.jpg",
+        },
+        {
+          title: "Chillwave Bliss",
+          artist: "Artist 4",
+          genre: "Chill",
+          url: "audio/Chillwave Bliss.mp3",
+          img: "assets/Chillwave Bliss.jpg",
+        },
+        {
+          title: "Retro Fusion",
+          artist: "Artist 5",
+          genre: "Electronic",
+          url: "audio/Retro Fusion.mp3",
+          img: "assets/Retro Fusion.jpg",
+        },
+        {
+          title: "Midnight Groove",
+          artist: "Artist 6",
+          genre: "Jazz",
+          url: "audio/Midnight Groove.mp3",
+          img: "assets/midnight Groove.jpg",
+        },
+        {
+          title: "Lofi Lullaby",
+          artist: "Artist 7",
+          genre: "Chill",
+          url: "audio/Lofi Lullaby.mp3",
+          img: "assets/Lofi Lullaby.jpg",
+        },
+        {
+          title: "Ambient Rhythms",
+          artist: "Artist 8",
+          genre: "Jazz",
+          url: "audio/Ambient Rhythms.mp3",
+          img: "assets/Ambient Rhythms.jpg",
+        },
+        {
+          title: "Future Bass Fusion",
+          artist: "Artist 9",
+          genre: "Electronic",
+          url: "audio/Future Bass Fusion.mp3",
+          img: "assets/Future Bass Fusion.jpg",
+        },
+        {
+          title: "Soulful Serenade",
+          artist: "Artist 10",
+          genre: "Hip-Hop",
+          url: "audio/Soulful Serenade.mp3",
+          img: "assets/Soulful Serenade.jpg",
+        },
+        {
+          title: "Experimental Odyssey",
+          artist: "Artist 11",
+          genre: "Jazz",
+          url: "audio/Experimental Odyssey.mp3",
+          img: "assets/Experimental Odyssey.jpg",
+        },
+      ];
+
+      function loadMusic() {
+        const container = document.getElementById("playlistContainer");
+        container.innerHTML = "";
+        musicData.forEach((track, index) => {
+          const musicItem = document.createElement("div");
+          musicItem.classList.add("playlist-item");
+          musicItem.innerHTML = `
+            <img src="${track.img}" alt="${track.title}" />
+            <div class="playlist-info">
+              <h2>${track.title}</h2>
+              <div class="audio-container">
+                <audio controls>
+                  <source src="${track.url}" type="audio/mp3" />
+                </audio>
+                <button class="add-to-playlist-btn" onclick="addToPlaylist('${track.title}')">
+                  Add to My Playlist
+                </button>
+              </div>
+            </div>
+          `;
+          container.appendChild(musicItem);
+        });
+      }
+
+      function populateCategories() {
+        const categories = [...new Set(musicData.map((track) => track.genre))];
+        const categorySelect = document.getElementById("categorySelect");
+
+        categories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          categorySelect.appendChild(option);
+        });
+      }
+
+      function filterByCategory() {
+        const selectedCategory =
+          document.getElementById("categorySelect").value;
+        const items = document.querySelectorAll(".playlist-item");
+
+        items.forEach((item) => {
+          const beatCategory = musicData.find(
+            (track) => track.title === item.querySelector("h2").textContent
+          ).genre;
+          if (selectedCategory === "" || beatCategory === selectedCategory) {
+            item.style.display = "flex";
+          } else {
+            item.style.display = "none";
+          }
+        });
+      }
+
+      function searchBeats() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(".playlist-item");
+
+        items.forEach((item) => {
+          const beatName = item.querySelector("h2").textContent.toLowerCase();
+          if (beatName.includes(input)) {
+            item.style.display = "flex";
+          } else {
+            item.style.display = "none";
+          }
+        });
+      }
+
+      function addToPlaylist(trackName) {
+        const playlists = JSON.parse(localStorage.getItem("playlists") || "[]");
+        const playlistName = prompt("Enter the playlist name to add to:");
+        const playlist = playlists.find((p) => p.name === playlistName);
+
+        if (playlist) {
+          if (!playlist.tracks.includes(trackName)) {
+            playlist.tracks.push(trackName);
+            localStorage.setItem("playlists", JSON.stringify(playlists));
+            alert("Track added to playlist!");
+          } else {
+            alert("Track is already in the playlist.");
+          }
+        } else {
+          alert("Playlist not found.");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadMusic();
+        populateCategories();
+      });
+    </script>
+  </body>
+</html>

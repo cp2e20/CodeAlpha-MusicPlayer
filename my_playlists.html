@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Playlists</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #148f77;
+        color: white;
+        padding: 20px;
+      }
+
+      .playlist-buttons {
+        margin-bottom: 20px;
+      }
+
+      .playlist-buttons button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #006d77;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      .playlist-buttons button:hover {
+        background-color: #004d40;
+      }
+
+      .tracks {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .track-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px; /* Space between track items */
+      }
+
+      .track-item img {
+        width: 100px; /* Adjust size as needed */
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 20px; /* Space between image and info */
+      }
+
+      .track-info {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; /* Allow the info section to take available space */
+      }
+
+      .track-info h2 {
+        margin-bottom: 10px;
+        color: white;
+      }
+
+      audio {
+        margin-top: 5px;
+      }
+      .add {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #006d77;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .add:hover {
+        background-color: #004d40;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My Playlists</h1>
+    <div class="playlist-buttons">
+      <!-- Playlist buttons will be generated here -->
+    </div>
+    <div class="tracks">
+      <!-- Tracks of the selected playlist will be displayed here -->
+    </div>
+    <button class="add" onclick="createPlaylist()">Create New Playlist</button>
+
+    <script>
+      // Load and display playlist buttons
+      function loadPlaylists() {
+        const playlistsContainer = document.querySelector(".playlist-buttons");
+        const tracksContainer = document.querySelector(".tracks");
+        playlistsContainer.innerHTML = ""; // Clear previous content
+
+        const playlists = JSON.parse(localStorage.getItem("playlists") || "[]");
+
+        playlists.forEach((playlist, index) => {
+          const button = document.createElement("button");
+          button.textContent = playlist.name;
+          button.onclick = () => displayTracks(playlist);
+          playlistsContainer.appendChild(button);
+        });
+      }
+
+      // Display tracks of the selected playlist
+      function displayTracks(playlist) {
+        const tracksContainer = document.querySelector(".tracks");
+        tracksContainer.innerHTML = ""; // Clear previous tracks
+
+        playlist.tracks.forEach((trackName) => {
+          const trackItem = document.createElement("div");
+          trackItem.className = "track-item";
+
+          const img = document.createElement("img");
+          img.src = `assets/${trackName}.jpg`; // Assuming image filenames are trackName.jpg
+          img.alt = trackName;
+
+          const trackInfo = document.createElement("div");
+          trackInfo.className = "track-info";
+
+          const h2 = document.createElement("h2");
+          h2.textContent = trackName;
+
+          const audio = document.createElement("audio");
+          audio.controls = true;
+          const source = document.createElement("source");
+          source.src = `audio/${trackName}.mp3`; // Assuming audio filenames are trackName.mp3
+          source.type = "audio/mp3";
+          audio.appendChild(source);
+
+          trackInfo.appendChild(h2);
+          trackInfo.appendChild(audio);
+
+          trackItem.appendChild(img);
+          trackItem.appendChild(trackInfo);
+
+          tracksContainer.appendChild(trackItem);
+        });
+      }
+
+      // Create a new playlist
+      function createPlaylist() {
+        const name = prompt("Enter playlist name:");
+        if (name) {
+          const playlists = JSON.parse(
+            localStorage.getItem("playlists") || "[]"
+          );
+          playlists.push({ name, tracks: [] });
+          localStorage.setItem("playlists", JSON.stringify(playlists));
+          loadPlaylists();
+        }
+      }
+
+      window.onload = loadPlaylists;
+    </script>
+  </body>
+</html>
