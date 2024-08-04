@@ -39,21 +39,21 @@
       .track-item {
         display: flex;
         align-items: center;
-        margin-bottom: 20px; /* Space between track items */
+        margin-bottom: 20px; 
       }
 
       .track-item img {
-        width: 100px; /* Adjust size as needed */
+        width: 100px; 
         height: 100px;
         object-fit: cover;
         border-radius: 4px;
-        margin-right: 20px; /* Space between image and info */
+        margin-right: 20px; 
       }
 
       .track-info {
         display: flex;
         flex-direction: column;
-        flex-grow: 1; /* Allow the info section to take available space */
+        flex-grow: 1; 
       }
 
       .track-info h2 {
@@ -82,10 +82,8 @@
   <body>
     <h1>My Playlists</h1>
     <div class="playlist-buttons">
-      <!-- Playlist buttons will be generated here -->
     </div>
     <div class="tracks">
-      <!-- Tracks of the selected playlist will be displayed here -->
     </div>
     <button class="add" onclick="createPlaylist()">Create New Playlist</button>
 
@@ -94,7 +92,7 @@
       function loadPlaylists() {
         const playlistsContainer = document.querySelector(".playlist-buttons");
         const tracksContainer = document.querySelector(".tracks");
-        playlistsContainer.innerHTML = ""; // Clear previous content
+        playlistsContainer.innerHTML = ""; 
 
         const playlists = JSON.parse(localStorage.getItem("playlists") || "[]");
 
@@ -109,14 +107,14 @@
       // Display tracks of the selected playlist
       function displayTracks(playlist) {
         const tracksContainer = document.querySelector(".tracks");
-        tracksContainer.innerHTML = ""; // Clear previous tracks
+        tracksContainer.innerHTML = ""; 
 
         playlist.tracks.forEach((trackName) => {
           const trackItem = document.createElement("div");
           trackItem.className = "track-item";
 
           const img = document.createElement("img");
-          img.src = `assets/${trackName}.jpg`; // Assuming image filenames are trackName.jpg
+          img.src = `assets/${trackName}.jpg`; 
           img.alt = trackName;
 
           const trackInfo = document.createElement("div");
@@ -128,7 +126,7 @@
           const audio = document.createElement("audio");
           audio.controls = true;
           const source = document.createElement("source");
-          source.src = `audio/${trackName}.mp3`; // Assuming audio filenames are trackName.mp3
+          source.src = `audio/${trackName}.mp3`; 
           source.type = "audio/mp3";
           audio.appendChild(source);
 
@@ -142,7 +140,7 @@
         });
       }
 
-      // Create a new playlist
+   
       function createPlaylist() {
         const name = prompt("Enter playlist name:");
         if (name) {
